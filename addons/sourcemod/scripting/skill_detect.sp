@@ -389,7 +389,7 @@ void Event_PlayerHurt(Event event, const char[] szName, bool bDontBroadcast)
 
                             // headshot with bullet based weapon (only single shots) -- only snipers
                             if (eWeaponType == WPTYPE_SNIPER && iHitGroup == HITGROUP_HEAD) {
-                                ExecuteForward_SkeetSniper(iAttacker, iVictim);
+                                Fire_SkeetSniper(iAttacker, iVictim);
                             } else {
                                 int iAssisters[4][4];
                                 int iAssisterCount;
@@ -406,15 +406,15 @@ void Event_PlayerHurt(Event event, const char[] szName, bool bDontBroadcast)
                                 }
 
                                 if (iAssisterCount > 0) {
-                                    ExecuteForward_SkeetHurt(iAttacker, iVictim, g_iDmgDealt[iVictim][iAttacker], g_iShotsDealt[iVictim][iAttacker]);
+                                    Fire_SkeetHurt(iAttacker, iVictim, g_iDmgDealt[iVictim][iAttacker], g_iShotsDealt[iVictim][iAttacker]);
                                 } else {
-                                    ExecuteForward_Skeet(iAttacker, iVictim, g_iShotsDealt[iVictim][iAttacker]);
+                                    Fire_Skeet(iAttacker, iVictim, g_iShotsDealt[iVictim][iAttacker]);
                                 }
                             }
                         }
                     } else if (iDmgType & DMG_SLASH || iDmgType & DMG_CLUB) {
                         if (iHealth == 0 && bIsPouncing) {
-                            ExecuteForward_SkeetMelee(iAttacker, iVictim);
+                            Fire_SkeetMelee(iAttacker, iVictim);
                         }
                     }
                 }
@@ -437,9 +437,9 @@ void Event_PlayerHurt(Event event, const char[] szName, bool bDontBroadcast)
 
                             // charger was killed, was it a full level?
                             if (iHitGroup == HITGROUP_HEAD) {
-                                ExecuteForward_ChargerLevel(iAttacker, iVictim);
+                                Fire_ChargerLevel(iAttacker, iVictim);
                             } else {
-                                ExecuteForward_ChargerLevelHurt(iAttacker, iVictim, iDmg);
+                                Fire_ChargerLevelHurt(iAttacker, iVictim, iDmg);
                             }
                         }
                     }
@@ -602,7 +602,7 @@ void Event_PlayerDeath(Event event, const char[] szName, bool bDontBroadcast)
     int iAttacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 
     if (event.GetBool("headshot"))
-        ExecuteForward_HeadShot(iAttacker, iVictim);
+        Fire_HeadShot(iAttacker, iVictim);
 
     if (IsValidInfected(iVictim)) {
         int zClass = GetInfectedClass(iVictim);
@@ -613,7 +613,7 @@ void Event_PlayerDeath(Event event, const char[] szName, bool bDontBroadcast)
                     return;
 
                 if (g_bSmokerClearCheck[iVictim] && g_iSmokerVictim[iVictim] == iAttacker && g_iSmokerVictimDamage[iVictim] >= g_cvSelfClearThresh.IntValue) {
-                    ExecuteForward_SmokerSelfClear(iAttacker, iVictim);
+                    Fire_SmokerSelfClear(iAttacker, iVictim);
                 } else {
                     g_bSmokerClearCheck[iVictim] = false;
                     g_iSmokerVictim    [iVictim] = 0;
@@ -634,24 +634,26 @@ void Event_PlayerDeath(Event event, const char[] szName, bool bDontBroadcast)
             case SI_CLASS_HUNTER: {
                 ResetHunter(iVictim);
                 if (g_iSpecialVictim[iVictim] > 0)
-                    ExecuteForward_SpecialClear(iAttacker, iVictim, g_iSpecialVictim[iVictim], SI_CLASS_HUNTER, (GetGameTime() - g_fPinTime[iVictim][0]), -1.0);
+                    Fire_SpecialClear(iAttacker, iVictim, g_iSpecialVictim[iVictim], SI_CLASS_HUNTER, (GetGameTime() - g_fPinTime[iVictim][0]), -1.0);
             }
 
             case SI_CLASS_JOCKEY: {
                 // check whether it was a clear
                 if (g_iSpecialVictim[iVictim] > 0)
-                    ExecuteForward_SpecialClear(iAttacker, iVictim, g_iSpecialVictim[iVictim], SI_CLASS_JOCKEY, (GetGameTime() - g_fPinTime[iVictim][0]), -1.0);
+                    Fire_SpecialClear(iAttacker, iVictim, g_iSpecialVictim[iVictim], SI_CLASS_JOCKEY, (GetGameTime() - g_fPinTime[iVictim][0]), -1.0);
             }
 
             case SI_CLASS_CHARGER: {
                 // is it someone carrying a survivor (that might be DC'd)?
                 // switch charge victim to 'impact' check (reset checktime)
-                if (!IsValidClient(g_iChargeVictim[iVictim]) || !IsClientInGame(g_iChargeVictim[iVictim]))
-                    g_fChargeTime[g_iChargeVictim[iVictim]] = GetGameTime();
+                int iChargeVictim = g_iChargeVictim[iVictim];
+                if (IsValidClientIndex(iChargeVictim) && IsClientInGame(iChargeVictim)) {
+                    g_fChargeTime[iChargeVictim] = GetGameTime();
+                }
 
                 // check whether it was a clear
                 if (g_iSpecialVictim[iVictim] > 0)
-                    ExecuteForward_SpecialClear(iAttacker, iVictim, g_iSpecialVictim[iVictim], SI_CLASS_CHARGER, (g_fPinTime[iVictim][1] > 0.0) ? (GetGameTime() - g_fPinTime[iVictim][1]) : -1.0, (GetGameTime() - g_fPinTime[iVictim][0]));
+                    Fire_SpecialClear(iAttacker, iVictim, g_iSpecialVictim[iVictim], SI_CLASS_CHARGER, (g_fPinTime[iVictim][1] > 0.0) ? (GetGameTime() - g_fPinTime[iVictim][1]) : -1.0, (GetGameTime() - g_fPinTime[iVictim][0]));
             }
         }
     } else if (IsValidSurvivor(iVictim)) {
@@ -680,7 +682,7 @@ Action Timer_BoomerKilledCheck(Handle hTimer, DataPack dp)
         return Plugin_Stop;
     }
 
-    if (!IsValidClient(iVictim) || !IsClientInGame(iVictim))
+    if (!IsValidClientIndex(iVictim) || !IsClientInGame(iVictim))
     {
         g_iBoomerKiller[iVictim] = 0;
         fTimeAlive = 0.0;
@@ -688,7 +690,7 @@ Action Timer_BoomerKilledCheck(Handle hTimer, DataPack dp)
     }
 
     int iAttacker = g_iBoomerKiller[iVictim];
-    if (!IsValidClient(iAttacker) || !IsClientInGame(iAttacker))
+    if (!IsValidClientIndex(iAttacker) || !IsClientInGame(iAttacker))
     {
         g_iBoomerKiller[iVictim] = 0;
         fTimeAlive = 0.0;
@@ -698,7 +700,7 @@ Action Timer_BoomerKilledCheck(Handle hTimer, DataPack dp)
     int   iShover     = g_iBoomerShover[iVictim];
     int   iShoveCount = g_iBoomerGotShoved[iVictim];
 
-    ExecuteForward_BoomerPop(iAttacker, iVictim, IsValidSurvivor(iShover) ? iShover : -1, iShoveCount, fTimeAlive);
+    Fire_BoomerPop(iAttacker, iVictim, IsValidSurvivor(iShover) ? iShover : -1, iShoveCount, fTimeAlive);
 
     g_iBoomerKiller[iVictim] = 0;
     return Plugin_Stop;
@@ -736,7 +738,7 @@ void Event_PlayerShoved(Event event, const char[] szName, bool bDontBroadcast)
             int iPinVictim = GetEntPropEnt(iVictim, Prop_Send, "m_pounceVictim");
 
             if (iPinVictim > 0) {
-                ExecuteForward_SpecialClear(iAttacker, iVictim, iPinVictim, SI_CLASS_HUNTER, (GetGameTime() - g_fPinTime[iVictim][0]), -1.0, true);
+                Fire_SpecialClear(iAttacker, iVictim, iPinVictim, SI_CLASS_HUNTER, (GetGameTime() - g_fPinTime[iVictim][0]), -1.0, true);
             }
         }
 
@@ -745,7 +747,7 @@ void Event_PlayerShoved(Event event, const char[] szName, bool bDontBroadcast)
             int iPinVictim = GetEntPropEnt(iVictim, Prop_Send, "m_jockeyVictim");
 
             if (iPinVictim > 0) {
-                ExecuteForward_SpecialClear(iAttacker, iVictim, iPinVictim, SI_CLASS_JOCKEY, (GetGameTime() - g_fPinTime[iVictim][0]), -1.0, true);
+                Fire_SpecialClear(iAttacker, iVictim, iPinVictim, SI_CLASS_JOCKEY, (GetGameTime() - g_fPinTime[iVictim][0]), -1.0, true);
             }
         }
     }
@@ -753,7 +755,7 @@ void Event_PlayerShoved(Event event, const char[] szName, bool bDontBroadcast)
     if (g_fVictimLastShove[iVictim][iAttacker] == 0.0 || (GetGameTime() - g_fVictimLastShove[iVictim][iAttacker]) >= SHOVE_TIME)
     {
         if (GetEntProp(iVictim, Prop_Send, "m_isAttemptingToPounce")) {
-            ExecuteForward_HunterDeadstop(iAttacker, iVictim);
+            Fire_HunterDeadstop(iAttacker, iVictim);
         }
 
         g_fVictimLastShove[iVictim][iAttacker] = GetGameTime();
@@ -828,7 +830,7 @@ Action Timer_HunterHighPounce(Handle hTimer, DataPack hPack)
     float fDamage = ReadPackFloat(hPack);
     float fHeight = ReadPackFloat(hPack);
 
-    ExecuteForward_HunterHighPounce(iClient, iVictim, g_iPounceDamage[iClient], fDamage, fHeight);
+    Fire_HunterHighPounce(iClient, iVictim, g_iPounceDamage[iClient], fDamage, fHeight);
     return Plugin_Continue;
 }
 
@@ -882,7 +884,7 @@ void Event_PlayerJumped(Event event, const char[] szName, bool bDontBroadcast)
                 g_bIsHopping[iClient] = false;
 
                 if (g_iHops[iClient]) {
-                    ExecuteForward_BunnyHopStreak(iClient, g_iHops[iClient], g_fHopTopVelocity[iClient]);
+                    Fire_BunnyHopStreak(iClient, g_iHops[iClient], g_fHopTopVelocity[iClient]);
                     g_iHops[iClient] = 0;
                 }
             }
@@ -902,7 +904,7 @@ void Event_PlayerJumped(Event event, const char[] szName, bool bDontBroadcast)
  */
 Action Timer_CheckHop(Handle hTimer, any iClient)
 {
-    if (!IsValidClient(iClient) || !IsClientInGame(iClient) || !IsPlayerAlive(iClient)) {
+    if (!IsValidClientIndex(iClient) || !IsClientInGame(iClient) || !IsPlayerAlive(iClient)) {
         return Plugin_Stop;
     }
 
@@ -925,14 +927,14 @@ Action Timer_CheckHop(Handle hTimer, any iClient)
  */
 Action Timer_CheckHopStreak(Handle hTimer, any iClient)
 {
-    if (!IsValidClient(iClient) || !IsClientInGame(iClient) || !IsPlayerAlive(iClient)) {
+    if (!IsValidClientIndex(iClient) || !IsClientInGame(iClient) || !IsPlayerAlive(iClient)) {
         return Plugin_Continue;
     }
 
     // check if we have any sort of hop streak, and report
     if (g_bHopCheck[iClient] && g_iHops[iClient])
     {
-        ExecuteForward_BunnyHopStreak(iClient, g_iHops[iClient], g_fHopTopVelocity[iClient]);
+        Fire_BunnyHopStreak(iClient, g_iHops[iClient], g_fHopTopVelocity[iClient]);
         g_bIsHopping     [iClient] = false;
         g_iHops          [iClient] = 0;
         g_fHopTopVelocity[iClient] = 0.0;
@@ -977,7 +979,7 @@ void Event_AbilityUse(Event event, const char[] szName, bool bDontBroadcast)
     char szAbilityName[32];
     GetEventString(event, "ability", szAbilityName, sizeof(szAbilityName));
 
-    if (!IsValidClient(iClient) || !IsClientInGame(iClient)) {
+    if (!IsValidClientIndex(iClient) || !IsClientInGame(iClient)) {
         return;
     }
 
@@ -994,11 +996,12 @@ void Event_AbilityUse(Event event, const char[] szName, bool bDontBroadcast)
         }
 
         case ABL_ROCKTHROW: {
-            // tank throws rock
-            g_iTankRockClient[g_iRocksBeingThrownCount] = iClient;
             // safeguard
             if (g_iRocksBeingThrownCount < MAXPLAYERS + 1)
+            {
+                g_iTankRockClient[g_iRocksBeingThrownCount] = iClient;
                 g_iRocksBeingThrownCount ++;
+            }
         }
     }
 }
@@ -1067,7 +1070,7 @@ void Event_ChargeCarryEnd(Event event, const char[] szName, bool bDontBroadcast)
 {
     int iClient = GetClientOfUserId(GetEventInt(event, "userid"));
 
-    if (!IsValidClient(iClient)) {
+    if (!IsValidClientIndex(iClient)) {
         return;
     }
 
@@ -1116,7 +1119,7 @@ Action Timer_ChargeCheck(Handle hTimer, any iClient)
 
 Action Timer_DeathChargeCheck(Handle hTimer, any iClient)
 {
-    if (!IsValidClient(iClient) || !IsClientInGame(iClient)) {
+    if (!IsValidClientIndex(iClient) || !IsClientInGame(iClient)) {
         return Plugin_Continue;
     }
 
@@ -1140,7 +1143,7 @@ Action Timer_DeathChargeCheck(Handle hTimer, any iClient)
 
         float fHeight = g_fChargeVictimPos[iClient][2] - vPos[2];
         if (((iFlags & VICFLG_DROWN || iFlags & VICFLG_FALL) && (iFlags & VICFLG_HURTLOTS || iFlags & VICFLG_AIRDEATH) || (iFlags & VICFLG_WEIRDFLOW && fHeight >= MIN_FLOWDROPHEIGHT) || g_iVictimMapDmg[iClient] >= MIN_DC_TRIGGER_DMG) && !(iFlags & VICFLG_KILLEDBYOTHER))
-            ExecuteForward_DeathCharge(g_iVictimCharger[iClient], iClient, fHeight, GetVectorDistance(g_fChargeVictimPos[iClient], vPos, false), view_as<bool>(iFlags & VICFLG_CARRIED));
+            Fire_DeathCharge(g_iVictimCharger[iClient], iClient, fHeight, GetVectorDistance(g_fChargeVictimPos[iClient], vPos, false), view_as<bool>(iFlags & VICFLG_CARRIED));
     } else if ((iFlags & VICFLG_WEIRDFLOW || g_iVictimMapDmg[iClient] >= MIN_DC_RECHECK_DMG) && !(iFlags & VICFLG_WEIRDFLOWDONE)) {
         // could be incapped and dying more slowly
         // flag only gets set on preincap, so don't need to check for incap
@@ -1180,7 +1183,8 @@ public void OnEntityCreated(int iEnt, const char[] szClassname)
 }
 
 // entity destruction
-public void OnEntityDestroyed(int iEnt) {
+public void OnEntityDestroyed(int iEnt)
+{
     char szKey[10];
     FormatEx(szKey, sizeof(szKey), "%x", iEnt);
 
@@ -1191,11 +1195,12 @@ public void OnEntityDestroyed(int iEnt) {
     g_smRocks.Remove(szKey);
 }
 
-void TakeDamageAlivePost_Rock(int iVictim, int iAttacker, int iInflictor, float fDmg, int iDmgType, int iWeapon, const float vDmgForce[3], const float vDmgPos[3]) {
+void TakeDamageAlivePost_Rock(int iVictim, int iAttacker, int iInflictor, float fDmg, int iDmgType, int iWeapon, const float vDmgForce[3], const float vDmgPos[3])
+{
     if (GetEntProp(iVictim, Prop_Data, "m_iHealth") > 0)
         return;
 
-    if (!IsValidClient(iAttacker) || !IsClientInGame(iAttacker))
+    if (!IsValidClientIndex(iAttacker) || !IsClientInGame(iAttacker))
         return;
 
     char szRockKey[10];
@@ -1205,17 +1210,18 @@ void TakeDamageAlivePost_Rock(int iVictim, int iAttacker, int iInflictor, float 
     if (!g_smRocks.GetValue(szRockKey, iTank))
         return;
 
-    ExecuteForward_RockSkeeted(iAttacker, iTank);
+    Fire_RockSkeeted(iAttacker, iTank);
 }
 
 // boomer got somebody
-void Event_PlayerBoomed(Event event, const char[] szName, bool bDontBroadcast) {
+void Event_PlayerBoomed(Event event, const char[] szName, bool bDontBroadcast)
+{
     int  iAttacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     bool bByBoom   = event.GetBool("by_boomer");
 
     if (!g_bBoomerHitSomebody[iAttacker]) {
         if (IsValidSurvivor(g_iBoomerKiller[iAttacker]) && IsValidInfected(iAttacker) && IsValidSurvivor(g_iBoomerShover[iAttacker]))
-            ExecuteForward_BoomerPopEarly(g_iBoomerKiller[iAttacker], iAttacker, g_iBoomerShover[iAttacker]);
+            Fire_BoomerPopEarly(g_iBoomerKiller[iAttacker], iAttacker, g_iBoomerShover[iAttacker]);
     }
 
     if (bByBoom && IsValidInfected(iAttacker)) {
@@ -1236,7 +1242,7 @@ void Event_PlayerBoomed(Event event, const char[] szName, bool bDontBroadcast) {
 // check how many booms landed
 Action Timer_BoomVomitCheck(Handle hTimer, any iClient)
 {
-    ExecuteForward_BoomerVomitLanded(iClient, g_iBoomerVomitHits[iClient]);
+    Fire_BoomerVomitLanded(iClient, g_iBoomerVomitHits[iClient]);
     g_iBoomerVomitHits[iClient] = 0;
     return Plugin_Continue;
 }
@@ -1253,7 +1259,7 @@ void Event_TonguePullStopped(Event event, const char[] szName, bool bDontBroadca
         return;
 
     // clear check - if the smoker itself was not shoved, handle the clear
-    ExecuteForward_SpecialClear(iAttacker, iSmoker, iVictim, SI_CLASS_SMOKER, (g_fPinTime[iSmoker][1] > 0.0) ? (GetGameTime() - g_fPinTime[iSmoker][1]) : -1.0, (GetGameTime() - g_fPinTime[iSmoker][0]), view_as<bool>(iReason != CUT_SLASH && iReason != CUT_KILL));
+    Fire_SpecialClear(iAttacker, iSmoker, iVictim, SI_CLASS_SMOKER, (g_fPinTime[iSmoker][1] > 0.0) ? (GetGameTime() - g_fPinTime[iSmoker][1]) : -1.0, (GetGameTime() - g_fPinTime[iSmoker][0]), view_as<bool>(iReason != CUT_SLASH && iReason != CUT_KILL));
 
     if (iAttacker != iVictim)
         return;
@@ -1261,7 +1267,7 @@ void Event_TonguePullStopped(Event event, const char[] szName, bool bDontBroadca
     if (iReason == CUT_KILL) {
         g_bSmokerClearCheck[iSmoker] = true;
     } else if (g_bSmokerShoved[iSmoker]) {
-        ExecuteForward_SmokerSelfClear(iAttacker, iSmoker, true);
+        Fire_SmokerSelfClear(iAttacker, iSmoker, true);
     } else if (iReason == CUT_SLASH) {
         // check weapon
         char szWeapon[32];
@@ -1269,7 +1275,7 @@ void Event_TonguePullStopped(Event event, const char[] szName, bool bDontBroadca
 
         // this doesn't count the chainsaw, but that's no-skill anyway
         if (strcmp(szWeapon, "weapon_melee", false) == 0)
-            ExecuteForward_TongueCut(iAttacker, iSmoker);
+            Fire_TongueCut(iAttacker, iSmoker);
     }
 }
 
@@ -1309,7 +1315,7 @@ void Event_ChokeStop(Event event, const char[] szName, bool bDontBroadcast)
         return;
 
     // if the smoker itself was not shoved, handle the clear
-    ExecuteForward_SpecialClear(iAttacker, iSmoker, iVictim, SI_CLASS_SMOKER, (g_fPinTime[iSmoker][1] > 0.0) ? (GetGameTime() - g_fPinTime[iSmoker][1]) : -1.0, (GetGameTime() - g_fPinTime[iSmoker][0]), view_as<bool>(iReason != CUT_SLASH && iReason != CUT_KILL));
+    Fire_SpecialClear(iAttacker, iSmoker, iVictim, SI_CLASS_SMOKER, (g_fPinTime[iSmoker][1] > 0.0) ? (GetGameTime() - g_fPinTime[iSmoker][1]) : -1.0, (GetGameTime() - g_fPinTime[iSmoker][0]), view_as<bool>(iReason != CUT_SLASH && iReason != CUT_KILL));
 }
 
 // car alarm handling
@@ -1320,7 +1326,7 @@ void Event_TriggeredCarAlarm(Event event, const char[] szName, bool bDontBroadca
     if (!IsValidSurvivor(iClient))
         return;
 
-    ExecuteForward_CarAlarmTriggered(iClient);
+    Fire_CarAlarmTriggered(iClient);
 }
 
 void Event_WeaponFire(Event event, const char[] szName, bool bDontBroadcast)
@@ -1332,7 +1338,7 @@ void Event_WeaponFire(Event event, const char[] szName, bool bDontBroadcast)
 }
 
 // headshot
-void ExecuteForward_HeadShot(int iAttacker, int iVictim)
+void Fire_HeadShot(int iAttacker, int iVictim)
 {
     Call_StartForward(g_fwdHeadShot);
     Call_PushCell(iAttacker);
@@ -1341,7 +1347,7 @@ void ExecuteForward_HeadShot(int iAttacker, int iVictim)
 }
 
 // boomer pop
-void ExecuteForward_BoomerPop(int iAttacker, int iVictim, int iShover, int iShoveCount, float fTimeAlive)
+void Fire_BoomerPop(int iAttacker, int iVictim, int iShover, int iShoveCount, float fTimeAlive)
 {
     Call_StartForward(g_fwdBoomerPop);
     Call_PushCell(iAttacker);
@@ -1352,7 +1358,7 @@ void ExecuteForward_BoomerPop(int iAttacker, int iVictim, int iShover, int iShov
     Call_Finish();
 }
 
-void ExecuteForward_BoomerPopEarly(int iAttacker, int iVictim, int iShover)
+void Fire_BoomerPopEarly(int iAttacker, int iVictim, int iShover)
 {
     Call_StartForward(g_fwdBoomerPopEarly);
     Call_PushCell(iAttacker);
@@ -1362,7 +1368,7 @@ void ExecuteForward_BoomerPopEarly(int iAttacker, int iVictim, int iShover)
 }
 
 // charger level
-void ExecuteForward_ChargerLevel(int iAttacker, int iVictim)
+void Fire_ChargerLevel(int iAttacker, int iVictim)
 {
     Call_StartForward(g_fwdChargerLevel);
     Call_PushCell(iAttacker);
@@ -1371,7 +1377,7 @@ void ExecuteForward_ChargerLevel(int iAttacker, int iVictim)
 }
 
 // charger level hurt
-void ExecuteForward_ChargerLevelHurt(int iAttacker, int iVictim, int iDmg)
+void Fire_ChargerLevelHurt(int iAttacker, int iVictim, int iDmg)
 {
     Call_StartForward(g_fwdChargerLevelHurt);
     Call_PushCell(iAttacker);
@@ -1381,7 +1387,7 @@ void ExecuteForward_ChargerLevelHurt(int iAttacker, int iVictim, int iDmg)
 }
 
 // deadstops
-void ExecuteForward_HunterDeadstop(int iAttacker, int iVictim)
+void Fire_HunterDeadstop(int iAttacker, int iVictim)
 {
     Call_StartForward(g_fwdHunterDeadstop);
     Call_PushCell(iAttacker);
@@ -1390,7 +1396,7 @@ void ExecuteForward_HunterDeadstop(int iAttacker, int iVictim)
 }
 
 // skeet
-void ExecuteForward_SkeetSniper(int iAttacker, int iVictim)
+void Fire_SkeetSniper(int iAttacker, int iVictim)
 {
     Call_StartForward(g_fwdSkeetSniper);
     Call_PushCell(iAttacker);
@@ -1398,7 +1404,7 @@ void ExecuteForward_SkeetSniper(int iAttacker, int iVictim)
     Call_Finish();
 }
 
-void ExecuteForward_SkeetMelee(int iAttacker, int iVictim)
+void Fire_SkeetMelee(int iAttacker, int iVictim)
 {
     Call_StartForward(g_fwdSkeetMelee);
     Call_PushCell(iAttacker);
@@ -1406,7 +1412,7 @@ void ExecuteForward_SkeetMelee(int iAttacker, int iVictim)
     Call_Finish();
 }
 
-void ExecuteForward_SkeetHurt(int iAttacker, int iVictim, int iDmg, int iShots)
+void Fire_SkeetHurt(int iAttacker, int iVictim, int iDmg, int iShots)
 {
     Call_StartForward(g_fwdSkeetHurt);
     Call_PushCell(iAttacker);
@@ -1416,7 +1422,7 @@ void ExecuteForward_SkeetHurt(int iAttacker, int iVictim, int iDmg, int iShots)
     Call_Finish();
 }
 
-void ExecuteForward_Skeet(int iAttacker, int iVictim, int iShots)
+void Fire_Skeet(int iAttacker, int iVictim, int iShots)
 {
     Call_StartForward(g_fwdSkeet);
     Call_PushCell(iAttacker);
@@ -1426,7 +1432,7 @@ void ExecuteForward_Skeet(int iAttacker, int iVictim, int iShots)
 }
 
 // smoker clears
-void ExecuteForward_TongueCut(int iAttacker, int iVictim)
+void Fire_TongueCut(int iAttacker, int iVictim)
 {
     Call_StartForward(g_fwdTongueCut);
     Call_PushCell(iAttacker);
@@ -1434,7 +1440,7 @@ void ExecuteForward_TongueCut(int iAttacker, int iVictim)
     Call_Finish();
 }
 
-void ExecuteForward_SmokerSelfClear(int iAttacker, int iVictim, bool bWithShove = false)
+void Fire_SmokerSelfClear(int iAttacker, int iVictim, bool bWithShove = false)
 {
     Call_StartForward(g_fwdSmokerSelfClear);
     Call_PushCell(iAttacker);
@@ -1443,7 +1449,7 @@ void ExecuteForward_SmokerSelfClear(int iAttacker, int iVictim, bool bWithShove 
     Call_Finish();
 }
 
-void ExecuteForward_RockSkeeted(int iAttacker, int iVictim)
+void Fire_RockSkeeted(int iAttacker, int iVictim)
 {
     Call_StartForward(g_fwdRockSkeeted);
     Call_PushCell(iAttacker);
@@ -1452,7 +1458,7 @@ void ExecuteForward_RockSkeeted(int iAttacker, int iVictim)
 }
 
 // highpounces
-void ExecuteForward_HunterHighPounce(int iAttacker, int iVictim, int iActualDmg, float fCalculatedDmg, float fHeight)
+void Fire_HunterHighPounce(int iAttacker, int iVictim, int iActualDmg, float fCalculatedDmg, float fHeight)
 {
     Call_StartForward(g_fwdHunterHighPounce);
     Call_PushCell(iAttacker);
@@ -1465,7 +1471,7 @@ void ExecuteForward_HunterHighPounce(int iAttacker, int iVictim, int iActualDmg,
 }
 
 // deathcharges
-void ExecuteForward_DeathCharge(int iAttacker, int iVictim, float fHeight, float fDistance, bool bCarried = true)
+void Fire_DeathCharge(int iAttacker, int iVictim, float fHeight, float fDistance, bool bCarried = true)
 {
     Call_StartForward(g_fwdDeathCharge);
     Call_PushCell(iAttacker);
@@ -1477,7 +1483,7 @@ void ExecuteForward_DeathCharge(int iAttacker, int iVictim, float fHeight, float
 }
 
 // SI clears (cleartimeA = pummel/pounce/ride/choke, cleartimeB = tongue drag, charger carry)
-void ExecuteForward_SpecialClear(int iAttacker, int iVictim, int iPinVictim, int zClass, float fClearTimeA, float fClearTimeB, bool bWithShove = false)
+void Fire_SpecialClear(int iAttacker, int iVictim, int iPinVictim, int zClass, float fClearTimeA, float fClearTimeB, bool bWithShove = false)
 {
     Call_StartForward(g_fwdSpecialClear);
     Call_PushCell(iAttacker);
@@ -1491,7 +1497,7 @@ void ExecuteForward_SpecialClear(int iAttacker, int iVictim, int iPinVictim, int
 }
 
 // booms
-void ExecuteForward_BoomerVomitLanded(int iAttacker, int iBoomCount)
+void Fire_BoomerVomitLanded(int iAttacker, int iBoomCount)
 {
     Call_StartForward(g_fwdBoomerVomitLanded);
     Call_PushCell(iAttacker);
@@ -1500,7 +1506,7 @@ void ExecuteForward_BoomerVomitLanded(int iAttacker, int iBoomCount)
 }
 
 // bhaps
-void ExecuteForward_BunnyHopStreak(int iSurvivor, int iStreak, float fMaxVelocity)
+void Fire_BunnyHopStreak(int iSurvivor, int iStreak, float fMaxVelocity)
 {
     Call_StartForward(g_fwdBunnyHopStreak);
     Call_PushCell(iSurvivor);
@@ -1510,7 +1516,7 @@ void ExecuteForward_BunnyHopStreak(int iSurvivor, int iStreak, float fMaxVelocit
 }
 
 // car alarms
-void ExecuteForward_CarAlarmTriggered(int iSurvivor)
+void Fire_CarAlarmTriggered(int iSurvivor)
 {
     Call_StartForward(g_fwdCarAlarmTriggered);
     Call_PushCell(iSurvivor);
@@ -1536,7 +1542,7 @@ int ShiftTankThrower()
 
     // shift the tank array downwards, if there are more than 1 throwers
     if (g_iRocksBeingThrownCount > 1) {
-        for (int x = 1; x <= g_iRocksBeingThrownCount; x++) {
+        for (int x = 1; x < g_iRocksBeingThrownCount; x++) {
             g_iTankRockClient[x - 1] = g_iTankRockClient[x];
         }
     }
@@ -1571,7 +1577,7 @@ bool IsClientInfected(int iClient) {
  * @param iClient   Client index.
  * @return          true if the client index is valid, otherwise false.
  */
-bool IsValidClient(int iClient) {
+bool IsValidClientIndex(int iClient) {
     return (iClient > 0 && iClient <= MaxClients);
 }
 
@@ -1589,7 +1595,7 @@ int GetInfectedClass(int iClient) {
  * @return          Integer ID of the zombie class (see m_zombieClass constants).
  */
 bool IsValidSurvivor(int iClient) {
-    return IsValidClient(iClient) && IsClientInGame(iClient) && IsClientSurvivor(iClient);
+    return IsValidClientIndex(iClient) && IsClientInGame(iClient) && IsClientSurvivor(iClient);
 }
 
 /**
@@ -1599,5 +1605,5 @@ bool IsValidSurvivor(int iClient) {
  * @return          true if the client exists, is in-game, and is a Survivor.
  */
 bool IsValidInfected(int iClient) {
-    return IsValidClient(iClient) && IsClientInGame(iClient) && IsClientInfected(iClient);
+    return IsValidClientIndex(iClient) && IsClientInGame(iClient) && IsClientInfected(iClient);
 }

@@ -1,0 +1,338 @@
+"Phrases"
+{
+	"EASY"
+	{
+		"en"			"{green}★ "
+	}
+	
+	"MEDIUM"
+	{
+		"en"			"{green}★★ "
+	}
+
+	"HARD"
+	{
+		"en"			"{green}★★★ "
+	}
+
+	"BADASS"
+	{
+		"en"			"{green}.i. "
+	}
+
+	"HEADSHOT"
+	{
+		"en"			"HEADSHOT!"
+	}
+	
+	"HEADSHOTED"
+	{
+		"en"			"HEADSHOTED!"
+	}
+	
+	"SKEET_SNIPER"
+	{
+		"#format"		"{1:N},{2:N}"
+		"en"			"{blue}{1}{default} headshot-skeeted {green}{2}{default}'s hunter"
+	}
+	
+	"SKEET_SNIPER_BOT"
+	{
+		"#format"		"{1:N}"
+		"en"			"{blue}{1}{default} headshot-skeeted a hunter"
+	}
+
+	"SKEET_MELEE"
+	{
+		"#format"		"{1:N},{2:N}"
+		"en"			"{blue}{1}{default} melee-skeeted {green}{2}{default}'s hunter"
+	}
+	
+	"SKEET_MELEE_BOT"
+	{
+		"#format"		"{1:N}"
+		"en"			"{blue}{1}{default} melee-skeeted a hunter"
+	}
+
+	"SKEET_HURT_ONE_SHOT"
+	{
+		"#format"		"{1:N},{2:N},{3:d}"
+		"en"			"{blue}{1}{default} skeeted hurt {green}{2}{default}'s hunter for {blue}{3}{default} damage in {blue}one{default} shot"
+	}
+	
+	"SKEET_HURT"
+	{
+		"#format"		"{1:N},{2:N},{3:d},{4:d}"
+		"en"			"{blue}{1}{default} skeeted hurt {green}{2}{default}'s hunter for {blue}{3}{default} damage in {blue}{4}{default} shots"
+	}
+
+	"SKEET_HURT_ONE_SHOT_BOT"
+	{
+		"#format"		"{1:N},{2:d}"
+		"en"			"{blue}{1}{default} skeeted a hurt hunter for {blue}{2}{default} damage in {blue}one{default} shot"
+	}
+	
+	"SKEET_HURT_BOT"
+	{
+		"#format"		"{1:N},{2:d},{3:d}"
+		"en"			"{blue}{1}{default} skeeted a hurt hunter for {blue}{2}{default} damage in {blue}{3}{default} shots"
+	}
+
+	"SKEET_ONE_SHOT"
+	{
+		"#format"		"{1:N},{2:N}"
+		"en"			"{blue}{1}{default} skeeted {green}{2}{default}'s hunter in {blue}one{default} shot"
+	}
+	
+	"SKEET"
+	{
+		"#format"		"{1:N},{2:N},{3:d}"
+		"en"			"{blue}{1}{default} skeeted {green}{2}{default}'s hunter in {blue}{3}{default} shots"
+	}
+
+	"SKEET_ONE_SHOT_BOT"
+	{
+		"#format"		"{1:N}"
+		"en"			"{blue}{1}{default} skeeted a hunter in {blue}one{default} shot"
+	}
+	
+	"SKEET_BOT"
+	{
+		"#format"		"{1:N},{2:d}"
+		"en"			"{blue}{1}{default} skeeted a hunter in {blue}{2}{default} shots"
+	}
+
+	"BOOMER_POP_EARLY_SELF"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} shoved {green}{2}{default}'s boomer but popped it too early"
+	}
+
+	"BOOMER_POP_EARLY_SELF_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{blue}{1}{default} shoved a boomer but popped it too early"
+	}
+
+	"BOOMER_POP_EARLY_OTHER"
+	{
+		"#format"   "{1:N},{2:N},{3:N}"
+		"en"        "{blue}{1}{default} shoved {green}{2}{default}'s boomer but {blue}{3}{default} popped it too early"
+	}
+
+	"BOOMER_POP_EARLY_OTHER_BOT"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} shoved a boomer but {blue}{2}{default} popped it too early"
+	}
+
+	"BOOMER_POP_SELF_INSTANT"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} shoved and popped {green}{2}{default}'s boomer {blue}in no time"
+	}
+
+	"BOOMER_POP_SELF_INSTANT_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{blue}{1}{default} shoved and popped a boomer {blue}in no time"
+	}
+
+	"BOOMER_POP_SELF"
+	{
+		"#format"   "{1:N},{2:N},{3:.1f}"
+		"en"        "{blue}{1}{default} shoved and popped {green}{2}{default}'s boomer in {blue}{3}s"
+	}
+
+	"BOOMER_POP_SELF_BOT"
+	{
+		"#format"   "{1:N},{2:.1f}"
+		"en"        "{blue}{1}{default} shoved and popped a boomer in {blue}{2}s"
+	}
+
+	"BOOMER_POP_OTHER_INSTANT"
+	{
+		"#format"   "{1:N},{2:N},{3:N}"
+		"en"        "{blue}{1}{default} shoved and {blue}{2}{default} popped {green}{3}{default}'s boomer {blue}in no time"
+	}
+
+	"BOOMER_POP_OTHER_INSTANT_BOT"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} shoved and {blue}{2}{default} popped a boomer {blue}in no time"
+	}
+
+	"BOOMER_POP_OTHER"
+	{
+		"#format"   "{1:N},{2:N},{3:N},{4:.1f}"
+		"en"        "{blue}{1}{default} shoved and {blue}{2}{default} popped {green}{3}{default}'s boomer in {blue}{4}s"
+	}
+
+	"BOOMER_POP_OTHER_BOT"
+	{
+		"#format"   "{1:N},{2:N},{3:.1f}"
+		"en"        "{blue}{1}{default} shoved and {blue}{2}{default} popped a boomer in {blue}{3}s"
+	}
+
+	"BOOMER_POP_SHUTDOWN_INSTANT"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} shut down {green}{2}{default}'s boomer {blue}in no time"
+	}
+
+	"BOOMER_POP_SHUTDOWN_INSTANT_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{blue}{1}{default} shut down a boomer {blue}in no time"
+	}
+
+	"BOOMER_POP_SHUTDOWN"
+	{
+		"#format"   "{1:N},{2:N},{3:.1f}"
+		"en"        "{blue}{1}{default} shut down {green}{2}{default}'s boomer in {blue}{3}s"
+	}
+
+	"BOOMER_POP_SHUTDOWN_BOT"
+	{
+		"#format"   "{1:N},{2:.1f}"
+		"en"        "{blue}{1}{default} shut down a boomer in {blue}{2}s"
+	}
+
+	"CHARGER_LEVEL"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} leveled {green}{2}{default}'s charger"
+	}
+
+	"CHARGER_LEVEL_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{blue}{1}{default} leveled a charger"
+	}
+
+	"CHARGER_LEVEL_HURT"
+	{
+		"#format"   "{1:N},{2:N},{3:d}"
+		"en"        "{blue}{1}{default} leveled hurt {green}{2}{default}'s charger for {blue}{3}{default} damage"
+	}
+
+	"CHARGER_LEVEL_HURT_BOT"
+	{
+		"#format"   "{1:N},{2:d}"
+		"en"        "{blue}{1}{default} leveled a hurt charger for {blue}{2}{default} damage"
+	}
+
+	"HUNTER_DEADSTOP"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} deadstopped {green}{2}{default}'s hunter"
+	}
+
+	"TONGUE_CUT"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} cut {green}{2}{default}'s smoker tongue"
+	}
+
+	"TONGUE_CUT_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{blue}{1}{default} cut a smoker tongue"
+	}
+
+	"SMOKER_SELF_CLEAR_SHOVE"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} shoved {green}{2}{default}'s smoker while being capped"
+	}
+
+	"SMOKER_SELF_CLEAR_KILL"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} killed {green}{2}{default}'s smoker while being capped"
+	}
+
+	"SMOKER_SELF_CLEAR_SHOVE_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{blue}{1}{default} shoved a smoker while being capped"
+	}
+
+	"SMOKER_SELF_CLEAR_KILL_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{blue}{1}{default} killed a smoker while being capped"
+	}
+
+	"TANK_ROCK_SKEETED"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{blue}{1}{default} skeeted {green}{2}{default}'s tank rock"
+	}
+
+	"TANK_ROCK_SKEETED_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{blue}{1}{default} skeeted a tank rock"
+	}
+
+	"HUNTER_HIGH_POUNCE"
+	{
+		"#format"   "{1:N},{2:N},{3:d}"
+		"en"        "{red}{1}{default} high-pounced {green}{2}{default} (Damage: {red}{3}{default})"
+	}
+
+	"HUNTER_HIGH_POUNCE_BOT"
+	{
+		"#format"   "{1:N},{2:N},{3:d}"
+		"en"        "{red}{1}{default} high-pounced {green}{2}{default} (Damage: {red}{3}{default})"
+	}
+
+	"HUNTER_DEADSTOP_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{blue}{1}{default} deadstopped a hunter"
+	}
+
+	"DEATH_CHARGE"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{red}{1}{default} death-charged {green}{2}"
+	}
+
+	"DEATH_CHARGE_BOWLING"
+	{
+		"#format"   "{1:N},{2:N}"
+		"en"        "{red}{1}{default} death-charged {green}{2}{default} by bowling"
+	}
+
+	"DEATH_CHARGE_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{red}{1}{default} death-charged a survivor"
+	}
+
+	"DEATH_CHARGE_BOWLING_BOT"
+	{
+		"#format"   "{1:N}"
+		"en"        "{red}{1}{default} death-charged a survivor{default} by bowling"
+	}
+
+	"BUNNYHOP_STREAK"
+	{
+		"#format"   "{1:N},{2:d},{3:.1f}"
+		"en"        "{blue}{1}{default} got {blue}{2}{default} bunnyhops in a row. Top speed: {blue}{3}"
+	}
+
+	"VOMITED_ALL"
+	{
+		"#format"		"{1:N}"
+		"en"			"{red}{1}{default} vomited all survivors"
+	}
+
+	"CAR_ALARM_TRIGGERED"
+	{
+		"#format"		"{1:N}"
+		"en"			"{blue}{1}{default} triggered an alarm"
+	}
+}
