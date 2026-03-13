@@ -1,0 +1,111 @@
+"Phrases"
+{
+	"EASY"
+	{
+		"en"			"{green}★ "
+	}
+	
+	"MEDIUM"
+	{
+		"en"			"{green}★★ "
+	}
+
+	"HARD"
+	{
+		"en"			"{green}★★★ "
+	}
+
+	"BADASS"
+	{
+		"en"			"{green}☠ "
+	}
+
+	"HEADSHOT"
+	{
+		"en"			"HEADSHOT!"
+	}
+	
+	"HEADSHOTED"
+	{
+		"en"			"HEADSHOTED!"
+	}
+	
+	"SKEET_SNIPER"
+	{
+		"#format"		"{1:N},{2:N}"
+		"en"			"{blue}{1}{default} headshot-skeeted {green}{2}{default}'s hunter"
+	}
+	
+	"SKEET_SNIPER_BOT"
+	{
+		"#format"		"{1:N}"
+		"en"			"{blue}{1}{default} headshot-skeeted a hunter"
+	}
+
+	"SKEET_MELEE"
+	{
+		"#format"		"{1:N},{2:N}"
+		"en"			"{blue}{1}{default} melee-skeeted {green}{2}{default}'s hunter"
+	}
+	
+	"SKEET_MELEE_BOT"
+	{
+		"#format"		"{1:N}"
+		"en"			"{blue}{1}{default} melee-skeeted a hunter"
+	}
+
+	"SKEET_HURT_ONE_SHOT"
+	{
+		"#format"		"{1:N},{2:N},{3:d}"
+		"en"			"{blue}{1}{default} skeeted hurt {green}{2}{default}'s hunter for {blue}{3}{default} damage in {blue}one{default} shot"
+	}
+	
+	"SKEET_HURT"
+	{
+		"#format"		"{1:N},{2:N},{3:d},{4:d}"
+		"en"			"{blue}{1}{default} skeeted hurt {green}{2}{default}'s hunter for {blue}{3}{default} damage in {blue}{4}{default} shots"
+	}
+
+	"SKEET_HURT_ONE_SHOT_BOT"
+	{
+		"#format"		"{1:N},{2:d}"
+		"en"			"{blue}{1}{default} skeeted a hurt hunter for {blue}{2}{default} damage in {blue}one{default} shot"
+	}
+	
+	"SKEET_HURT_BOT"
+	{
+		"#format"		"{1:N},{2:d},{3:d}"
+		"en"			"{blue}{1}{default} skeeted a hurt hunter for {blue}{2}{default} damage in {blue}{3}{default} shots"
+	}
+
+	"SKEET_ONE_SHOT"
+	{
+		"#format"		"{1:N},{2:N}"
+		"en"			"{blue}{1}{default} skeeted {green}{2}{default}'s hunter in {blue}one{default} shot"
+	}
+	
+	"SKEET"
+	{
+		"#format"		"{1:N},{2:N},{3:d}"
+		"en"			"{blue}{1}{default} skeeted {green}{2}{default}'s hunter in {blue}{3}{default} shots"
+	}
+
+	"SKEET_ONE_SHOT_BOT"
+	{
+		"#format"		"{1:N}"
+		"en"			"{blue}{1}{default} skeeted a hunter in {blue}one{default} shot"
+	}
+	
+	"SKEET_BOT"
+	{
+		"#format"		"{1:N},{2:d}"
+		"en"			"{blue}{1}{default} skeeted a hunter in {blue}{2}{default} shots"
+	}
+
+
+	"CAR_ALARM_TRIGGERED"
+	{
+		"#format"		"{1:N}"
+		"en"			"{blue}{1}{default} triggered an alarm"
+	}
+}

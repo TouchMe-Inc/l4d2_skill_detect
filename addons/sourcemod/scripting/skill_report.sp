@@ -30,7 +30,7 @@ public Plugin myinfo = {
 #define SI_CLASS_CHARGER        6
 
 
-enum ForwardEvent
+enum
 {
     FE_HeadShot,
     FE_BoomerPop,
@@ -81,12 +81,14 @@ char g_szCvar[][] = {
 
 public void OnPluginStart()
 {
+    LoadTranslations("skill_report.phrases");
+
     for (int i = 0, iIdx=0; i < sizeof(g_szCvar); i += 2)
     {
         g_cvEvent[iIdx++] = CreateConVar(
-            g_szCvar[i],    
-            "1",     
-            g_szCvar[i + 1]
+            .name = g_szCvar[i],
+            .defaultValue = "1",
+            .description = g_szCvar[i + 1]
         );
     }
 }
@@ -103,11 +105,11 @@ public void OnHeadShot(int iAttacker, int iVictim)
     int zClass = GetInfectedClass(iVictim);
     if (zClass >= SI_CLASS_SMOKER && zClass <= SI_CLASS_CHARGER)
     {
-        PrintCenterText(iAttacker, "HEADSHOT!");
+        PrintCenterText(iAttacker, "%T", "HEADSHOT", iAttacker);
 
         if (!IsFakeClient(iVictim)) {
-            PrintCenterText(iVictim, "HEADSHOTED!");
-        }   
+            PrintCenterText(iVictim, "%T", "HEADSHOTED", iVictim);
+        }
     }
 }
 
@@ -117,13 +119,14 @@ public void OnSkeetSniper(int iAttacker, int iVictim)
         return;
     }
 
-    if (!IsValidSurvivor(iAttacker) || IsFakeClient(iAttacker) || !IsValidInfected(iVictim))
+    if (!IsValidSurvivor(iAttacker) || IsFakeClient(iAttacker) || !IsValidInfected(iVictim)) {
         return;
+    }
 
     if (!IsFakeClient(iVictim)) {
-        CPrintToChatAll("{green}★★★{default} Sniper {blue}%N{default} headshot-skeeted {green}%N{default}'s hunter", iAttacker, iVictim);
+        CPrintToChatAll("%t%t", "MEDIUM", "SKEET_SNIPER", iAttacker, iVictim);
     } else {
-        CPrintToChatAll("{green}☆☆☆{default} Sniper {blue}%N{default} headshot-skeeted a hunter", iAttacker);
+        CPrintToChatAll("%t%t", "MEDIUM", "SKEET_SNIPER_BOT", iAttacker);
     }
 }
 
@@ -137,9 +140,9 @@ public void OnSkeetMelee(int iAttacker, int iVictim)
         return;
 
     if (!IsFakeClient(iVictim)) {
-        CPrintToChatAll("{green}★★★ {blue}%N{default} melee-skeeted {green}%N{default}'s hunter", iAttacker, iVictim);
+        CPrintToChatAll("%t%t", "HARD", "SKEET_MELEE", iAttacker, iVictim);
     } else {
-        CPrintToChatAll("{green}☆☆☆ {blue}%N{default} melee-skeeted a hunter", iAttacker);
+        CPrintToChatAll("%t%t", "HARD", "SKEET_MELEE_BOT", iAttacker);
     }
 }
 
@@ -149,13 +152,22 @@ public void OnSkeetHurt(int iAttacker, int iVictim, int iDmg, int iShots)
         return;
     }
 
-    if (!IsValidSurvivor(iAttacker) || IsFakeClient(iAttacker) || !IsValidInfected(iVictim))
+    if (!IsValidSurvivor(iAttacker) || IsFakeClient(iAttacker) || !IsValidInfected(iVictim)) {
         return;
+    }
 
     if (!IsFakeClient(iVictim)) {
-        CPrintToChatAll("{green}★ {blue}%N{default} skeeted hurt {green}%N{default}'s hunter for {blue}%d{default} damage in {blue}%d{default} shot%s", iAttacker, iVictim, iDmg, iShots, iShots == 1 ? "" : "s");
+        if (iShots == 1) {
+            CPrintToChatAll("%t%t", "EASY", "SKEET_HURT_ONE_SHOT", iAttacker, iVictim, iDmg);
+        } else {
+            CPrintToChatAll("%t%t", "EASY", "SKEET_HURT", iAttacker, iVictim, iDmg, iShots);
+        }
     } else {
-        CPrintToChatAll("{green}☆ {blue}%N{default} skeeted a hurt hunter for {blue}%d{default} damage in {blue}%d{default} shot%s", iAttacker, iDmg, iShots, iShots == 1 ? "" : "s");
+        if (iShots == 1) {
+            CPrintToChatAll("%t%t", "EASY", "SKEET_HURT_ONE_SHOT_BOT", iAttacker, iDmg);
+        } else {
+            CPrintToChatAll("%t%t", "EASY", "SKEET_HURT_BOT", iAttacker, iDmg, iShots);
+        }
     }
 }
 
@@ -164,21 +176,22 @@ public void OnSkeet(int iAttacker, int iVictim, int iShots)
     if (!GetConVarBool(g_cvEvent[FE_Skeet])) {
         return;
     }
-    
-    if (!IsValidSurvivor(iAttacker) || IsFakeClient(iAttacker) || !IsValidInfected(iVictim))
+
+    if (!IsValidSurvivor(iAttacker) || IsFakeClient(iAttacker) || !IsValidInfected(iVictim)) {
         return;
+    }
 
     if (!IsFakeClient(iVictim)) {
         if (iShots == 1) {
-            CPrintToChatAll("{green}★★ {blue}%N{default} skeeted {green}%N{default}'s hunter in {blue}%d{default} shot", iAttacker, iVictim, iShots);
+            CPrintToChatAll("%t%t", "MEDIUM", "SKEET_ONE_SHOT", iAttacker, iVictim);
         } else {
-            CPrintToChatAll("{green}★ {blue}%N{default} skeeted {green}%N{default}'s hunter in {blue}%d{default} shots", iAttacker, iVictim, iShots);
+            CPrintToChatAll("%t%t", "EASY", "SKEET", iAttacker, iVictim, iShots);
         }
     } else {
         if (iShots == 1) {
-            CPrintToChatAll("{green}☆☆ {blue}%N{default} skeeted a hunter in {blue}%d{default} shot", iAttacker, iShots);
+            CPrintToChatAll("%t%t", "MEDIUM", "SKEET_ONE_SHOT_BOT", iAttacker);
         } else {
-            CPrintToChatAll("{green}☆ {blue}%N{default} skeeted a hunter in {blue}%d{default} shots", iAttacker, iShots);
+            CPrintToChatAll("%t%t", "EASY", "SKEET_BOT", iAttacker, iShots);
         }
     }
 }
@@ -279,9 +292,9 @@ public void OnChargerLevel(int iAttacker, int iVictim)
     }
 
     if (!IsFakeClient(iVictim)) {
-        CPrintToChatAll("{green}★★★ {blue}%N{default} leveled {green}%N{default}'s charger", iAttacker, iVictim);
+        CPrintToChatAll("%t%t", "HARD", "CHARGER_LEVEL", iAttacker, iVictim);
     } else {
-        CPrintToChatAll("{green}☆☆☆ {blue}%N{default} leveled a charger", iAttacker);
+        CPrintToChatAll("%t%t", "HARD", "CHARGER_LEVEL_BOT", iAttacker);
     }
 }
 
@@ -295,9 +308,9 @@ public void OnChargerLevelHurt(int iAttacker, int iVictim, int iDmg)
         return;
 
     if (!IsFakeClient(iVictim)) {
-        CPrintToChatAll("{green}★ {blue}%N{default} leveled hurt {green}%N{default}'s charger for {blue}%d{default} damage", iAttacker, iVictim, iDmg);
+        CPrintToChatAll("%t%t", "EASY", "CHARGER_LEVEL_HURT", iAttacker, iVictim, iDmg);
     } else {
-        CPrintToChatAll("{green}☆ {blue}%N{default} leveled a hurt charger for {blue}%d{default} damage", iAttacker, iDmg);
+        CPrintToChatAll("%t%t", "EASY", "CHARGER_LEVEL_HURT_BOT", iAttacker, iDmg);
     }
 }
 
@@ -312,9 +325,9 @@ public void OnHunterDeadstop(int iAttacker, int iVictim)
     }
 
     if (!IsFakeClient(iVictim)) {
-        CPrintToChatAll("{green}★ {blue}%N{default} deadstopped {green}%N{default}'s hunter", iAttacker, iVictim);
+        CPrintToChatAll("%t%t", "EASY", "HUNTER_DEADSTOP", iAttacker, iVictim);
     } else {
-        CPrintToChatAll("{green}☆ {blue}%N{default} deadstopped a hunter", iAttacker);
+        CPrintToChatAll("%t%t", "EASY", "HUNTER_DEADSTOP_BOT", iAttacker);
     }
 }
 
@@ -329,9 +342,9 @@ public void OnTongueCut(int iAttacker, int iVictim)
     }
 
     if (!IsFakeClient(iVictim)) {
-        CPrintToChatAll("{green}★★ {blue}%N{default} cut {green}%N{default}'s smoker tongue", iAttacker, iVictim);
+        CPrintToChatAll("%t%t", "MEDIUM", "TONGUE_CUT", iAttacker, iVictim);
     } else {
-        CPrintToChatAll("{green}☆☆ {blue}%N{default} cut a smoker tongue", iAttacker);
+        CPrintToChatAll("%t%t", "MEDIUM", "TONGUE_CUT_BOT", iAttacker);
     }
 }
 
@@ -386,21 +399,22 @@ public void OnHunterHighPounce(int iAttacker, int iVictim, int iActualDmg, float
     if (!IsValidInfected(iAttacker) || IsFakeClient(iAttacker) || !IsValidSurvivor(iVictim))
         return;
 
+    int iDamage = RoundToFloor(fCalculatedDmg);
     if (!IsFakeClient(iVictim)) {
-        if (RoundToFloor(fCalculatedDmg) == 25) {
-            CPrintToChatAll("{green}★★★ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, RoundToFloor(fCalculatedDmg));
-        } else if (RoundToFloor(fCalculatedDmg) >= 20) {
-            CPrintToChatAll("{green}★★ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, RoundToFloor(fCalculatedDmg));
-        } else if (RoundToFloor(fCalculatedDmg) >= 15) {
-            CPrintToChatAll("{green}★ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, RoundToFloor(fCalculatedDmg));
+        if (iDamage == 25) {
+            CPrintToChatAll("{green}★★★ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, iDamage);
+        } else if (iDamage >= 20) {
+            CPrintToChatAll("{green}★★ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, iDamage);
+        } else if (iDamage >= 15) {
+            CPrintToChatAll("{green}★ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, iDamage);
         }
     } else {
-        if (RoundToFloor(fCalculatedDmg) == 25) {
-            CPrintToChatAll("{green}☆☆☆ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, RoundToFloor(fCalculatedDmg));
-        } else if (RoundToFloor(fCalculatedDmg) >= 20) {
-            CPrintToChatAll("{green}☆☆ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, RoundToFloor(fCalculatedDmg));
-        } else if (RoundToFloor(fCalculatedDmg) >= 15) {
-            CPrintToChatAll("{green}☆ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, RoundToFloor(fCalculatedDmg));
+        if (iDamage == 25) {
+            CPrintToChatAll("{green}☆☆☆ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, iDamage);
+        } else if (iDamage >= 20) {
+            CPrintToChatAll("{green}☆☆ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, iDamage);
+        } else if (iDamage >= 15) {
+            CPrintToChatAll("{green}☆ {red}%N{default} high-pounced {green}%N{default} (Damage: {red}%i{default})", iAttacker, iVictim, iDamage);
         }
     }
 }
@@ -439,8 +453,9 @@ public void OnSpecialClear(int iAttacker, int iVictim, int iPinVictim, int zClas
         "tank"
     };
 
-    if (!IsValidSurvivor(iAttacker) || IsFakeClient(iAttacker) || !IsValidInfected(iVictim) || !IsValidSurvivor(iPinVictim))
+    if (!IsValidSurvivor(iAttacker) || IsFakeClient(iAttacker) || !IsValidInfected(iVictim) || !IsValidSurvivor(iPinVictim)) {
         return;
+    }
 
     // sanity check:
     if (fClearTimeA < 0 && fClearTimeA != -1.0)
@@ -522,10 +537,11 @@ public void OnCarAlarmTriggered(int iSurvivor)
         return;
     }
 
-    if (!IsValidSurvivor(iSurvivor) || IsFakeClient(iSurvivor))
+    if (!IsValidSurvivor(iSurvivor) || IsFakeClient(iSurvivor)) {
         return;
+    }
 
-    CPrintToChatAll("{green}☠ {blue}%N{default} triggered an alarm", iSurvivor);
+    CPrintToChatAll("%t%t", "BADASS", "CAR_ALARM_TRIGGERED", iSurvivor);
 }
 
 /**
@@ -554,12 +570,12 @@ bool IsClientInfected(int iClient) {
  * @param iClient   Client index.
  * @return          true if the client index is valid, otherwise false.
  */
-bool IsValidClient(int iClient) {
+bool IsValidClientIndex(int iClient) {
     return (iClient > 0 && iClient <= MaxClients);
 }
 
 bool IsValidSurvivor(int iClient) {
-    return IsValidClient(iClient) && IsClientInGame(iClient) && IsClientSurvivor(iClient);
+    return IsValidClientIndex(iClient) && IsClientInGame(iClient) && IsClientSurvivor(iClient);
 }
 
 /**
@@ -569,7 +585,7 @@ bool IsValidSurvivor(int iClient) {
  * @return          true if the client exists, is in-game, and is a Survivor.
  */
 bool IsValidInfected(int iClient) {
-    return IsValidClient(iClient) && IsClientInGame(iClient) && IsClientInfected(iClient);
+    return IsValidClientIndex(iClient) && IsClientInGame(iClient) && IsClientInfected(iClient);
 }
 
 /**
